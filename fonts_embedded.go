@@ -26,8 +26,7 @@ func (s *EmbeddedFontsStorage) LoadFontByName(name string) *truetype.Font {
 	return trueTypeFont
 }
 
-// LoadFontsByNames import fonts from dir.
-// make the simple-font(RitaSmith.ttf) the first font of trueTypeFonts.
+// LoadFontsByNames import fonts from dir, preserving the given order.
 func (s *EmbeddedFontsStorage) LoadFontsByNames(assetFontNames []string) []*truetype.Font {
 	fonts := make([]*truetype.Font, 0)
 	for _, assetName := range assetFontNames {

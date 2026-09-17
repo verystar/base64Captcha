@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package base64Captcha supports digits, numbers,alphabet, arithmetic, audio and digit-alphabet captcha.
+// Package base64Captcha supports digits, numbers,alphabet, arithmetic and digit-alphabet captcha.
 // base64Captcha is used for fast development of RESTful APIs, web apps and backend services in Go. give a string identifier to the package and it returns with a base64-encoding-png-string
 package base64Captcha
 
 import (
-	"math/rand"
 	"reflect"
 	"testing"
 )
@@ -29,7 +28,6 @@ func TestCaptcha_GenerateB64s(t *testing.T) {
 	}
 
 	dDigit := DriverDigit{80, 240, 5, 0.7, 5}
-	audioDriver := NewDriverAudio(rand.Intn(5), "en")
 	tests := []struct {
 		name     string
 		fields   fields
@@ -38,7 +36,6 @@ func TestCaptcha_GenerateB64s(t *testing.T) {
 		wantErr  bool
 	}{
 		{"mem-digit", fields{&dDigit, DefaultMemStore}, "xxxx", "", false},
-		{"mem-audio", fields{audioDriver, DefaultMemStore}, "xxxx", "", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

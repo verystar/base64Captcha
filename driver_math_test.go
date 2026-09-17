@@ -26,7 +26,7 @@ func TestDriverMath_DrawCaptcha(t *testing.T) {
 		wantErr  bool
 	}{
 		{"Math",
-			fields{80, 240, 5, OptionShowSineLine | OptionShowSlimeLine | OptionShowHollowLine, nil, []string{"3Dumb.ttf"}},
+			fields{80, 240, 5, OptionShowSineLine | OptionShowSlimeLine | OptionShowHollowLine, nil, []string{"actionj.ttf"}},
 			args{""},
 			nil, false},
 	}

@@ -22,7 +22,7 @@ type CaptchaEtcd struct {
 
 //NewClientEtcd constructor
 func NewClientEtcd(height, width int, store *etcd.Client) *CaptchaEtcd {
-	d := base64Captcha.NewDriverString(height, width, 0, 0, 4, "%#=qwe23456789rtyupasdfghjkzxcvbnm", &color.RGBA{0, 0, 0, 0}, []string{"wqy-microhei.ttc"})
+	d := base64Captcha.NewDriverString(height, width, 0, 0, 4, "%#=qwe23456789rtyupasdfghjkzxcvbnm", &color.RGBA{0, 0, 0, 0}, []string{"actionj.ttf"})
 	cli := &CaptchaEtcd{store: store}
 	cli.DriverString = d
 	return cli

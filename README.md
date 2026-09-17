@@ -8,7 +8,7 @@
 ![stability-stable](https://img.shields.io/badge/stability-stable-brightgreen.svg)
 [![Foundation](https://img.shields.io/badge/Golang-Foundation-green.svg)](http://golangfoundation.org)
 
-Base64captcha supports any unicode character and can easily be customized to support Math Chinese Korean Japanese Russian Arabic etc.
+Base64captcha supports any unicode character and can easily be customized to support Math Korean Japanese Russian Arabic etc.
 
 
 ## 1. 📖📖📖 Doc & Demo
@@ -59,7 +59,6 @@ There are some build-in drivers:
 1. [Build-in Driver Digit](driver_digit.go)  
 2. [Build-in Driver String](driver_string.go)
 3. [Build-in Driver Math](driver_math.go)
-4. [Build-in Driver Chinese](driver_chinese.go)
 
 ```go
 // Driver captcha interface for captcha engine to to write staff
@@ -119,7 +118,7 @@ func (c *Captcha) Verify(id, answer string, clear bool) (match bool) {
 }
 
 ```
-#### 2.3.4 🚵🚵🚵 ‍Generate Base64(image/audio) string
+#### 2.3.4 🚵🚵🚵 ‍Generate Base64(image) string
 ```go
 func (c *Captcha) Generate() (id, b64s string, err error) {
 	id,content, answer := c.Driver.GenerateIdQuestionAnswer()
@@ -158,14 +157,12 @@ import (
 
 //configJsonBody json request body.
 type configJsonBody struct {
-	Id            string
-	CaptchaType   string
-	VerifyValue   string
-	DriverAudio   *base64Captcha.DriverAudio
-	DriverString  *base64Captcha.DriverString
-	DriverChinese *base64Captcha.DriverChinese
-	DriverMath    *base64Captcha.DriverMath
-	DriverDigit   *base64Captcha.DriverDigit
+	Id           string
+	CaptchaType  string
+	VerifyValue  string
+	DriverString *base64Captcha.DriverString
+	DriverMath   *base64Captcha.DriverMath
+	DriverDigit  *base64Captcha.DriverDigit
 }
 
 var store = base64Captcha.DefaultMemStore
@@ -184,14 +181,10 @@ func generateCaptchaHandler(w http.ResponseWriter, r *http.Request) {
 
 	//create base64 encoding captcha
 	switch param.CaptchaType {
-	case "audio":
-		driver = param.DriverAudio
 	case "string":
 		driver = param.DriverString.ConvertFonts()
 	case "math":
 		driver = param.DriverMath.ConvertFonts()
-	case "chinese":
-		driver = param.DriverChinese.ConvertFonts()
 	default:
 		driver = param.DriverDigit
 	}
@@ -255,8 +248,7 @@ and [interface item](interface_item.go).
 
 There are some example for your reference.
 1. [DriverMath](driver_math.go)
-2. [DriverChinese](driver_chinese.go)
-3. [ItemChar](item_char.go)
+2. [ItemChar](item_char.go)
 
 ***You can even design the [captcha struct](captcha.go) to whatever you prefer.***
 

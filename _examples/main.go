@@ -9,16 +9,14 @@ import (
 	"net/http"
 )
 
-//configJsonBody json request body.
+// configJsonBody json request body.
 type configJsonBody struct {
-	Id            string
-	CaptchaType   string
-	VerifyValue   string
-	DriverAudio   *base64Captcha.DriverAudio
-	DriverString  *base64Captcha.DriverString
-	DriverChinese *base64Captcha.DriverChinese
-	DriverMath    *base64Captcha.DriverMath
-	DriverDigit   *base64Captcha.DriverDigit
+	Id           string
+	CaptchaType  string
+	VerifyValue  string
+	DriverString *base64Captcha.DriverString
+	DriverMath   *base64Captcha.DriverMath
+	DriverDigit  *base64Captcha.DriverDigit
 }
 
 var store = base64Captcha.DefaultMemStore
@@ -37,19 +35,15 @@ func generateCaptchaHandler(w http.ResponseWriter, r *http.Request) {
 
 	//choose driver
 	switch param.CaptchaType {
-	case "audio":
-		driver = param.DriverAudio
 	case "string":
 		driver = param.DriverString.ConvertFonts()
 	case "math":
 		driver = param.DriverMath.ConvertFonts()
-	case "chinese":
-		driver = param.DriverChinese.ConvertFonts()
 	default:
 		driver = param.DriverDigit
 	}
 	c := base64Captcha.NewCaptcha(driver, store)
-	id, b64s,_, err := c.Generate()
+	id, b64s, _, err := c.Generate()
 	body := map[string]interface{}{"code": 1, "data": b64s, "captchaId": id, "msg": "success"}
 	if err != nil {
 		body = map[string]interface{}{"code": 0, "msg": err.Error()}
@@ -81,7 +75,7 @@ func captchaVerifyHandle(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(body)
 }
 
-//start a net/http server
+// start a net/http server
 func main() {
 	//serve Vuejs+ElementUI+Axios Web Application
 	http.Handle("/", http.FileServer(http.Dir("./static")))

@@ -12,7 +12,6 @@ import (
 var langMap = map[string][]int{
 	//"zh-CN": []int{19968, 40869},
 	"latin":  {0x0000, 0x007f},
-	"zh":     {0x4e00, 0x9fa5},
 	"ko":     {12593, 12686},
 	"jp":     {12449, 12531}, //[]int{12353, 12435}
 	"ru":     {1025, 1169},
@@ -114,7 +113,11 @@ func (d *DriverLanguage) DrawCaptcha(content string) (item Item, err error) {
 
 	//draw content
 	//use font that match your language
-	err = itemChar.drawText(content, []*truetype.Font{fontChinese})
+	fonts := d.Fonts
+	if len(fonts) == 0 {
+		fonts = fontsAll
+	}
+	err = itemChar.drawText(content, fonts)
 	if err != nil {
 		return
 	}
