@@ -66,8 +66,8 @@ func Test_itemWriteFile(t *testing.T) {
 }
 
 func Test_pathExists(t *testing.T) {
-	td := os.TempDir()
-	defer os.RemoveAll(td)
+	//t.TempDir creates a unique temporary directory and removes it when the test finishes.
+	td := t.TempDir()
 	p := filepath.Join(td, RandomId())
 	if pathExists(p) {
 		t.Error("failed")

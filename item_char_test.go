@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/opentype"
 )
 
 func TestNewItemChar(t *testing.T) {
@@ -109,7 +109,7 @@ func TestItemChar_drawBeeline(t *testing.T) {
 func TestItemChar_drawNoise(t *testing.T) {
 	type args struct {
 		noiseText string
-		fonts     []*truetype.Font
+		fonts     []*opentype.Font
 	}
 	tests := []struct {
 		name    string
@@ -131,7 +131,7 @@ func TestItemChar_drawNoise(t *testing.T) {
 func TestItemChar_drawText(t *testing.T) {
 	type args struct {
 		text  string
-		fonts []*truetype.Font
+		fonts []*opentype.Font
 	}
 	tests := []struct {
 		name    string

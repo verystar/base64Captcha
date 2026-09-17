@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/opentype"
 )
 
 func TestDriverLanguage_DrawCaptcha(t *testing.T) {
@@ -17,7 +17,9 @@ func TestDriverLanguage_DrawCaptcha(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		itemWriteFile(item, "_builds", RandomId(), "png")
+		if err := itemWriteFile(item, "_builds", RandomId(), "png"); err != nil {
+			t.Error(err)
+		}
 	}
 }
 
@@ -50,7 +52,7 @@ func TestNewDriverLanguage(t *testing.T) {
 		showLineOptions int
 		length          int
 		bgColor         *color.RGBA
-		fonts           []*truetype.Font
+		fonts           []*opentype.Font
 		languageCode    string
 	}
 	tests := []struct {

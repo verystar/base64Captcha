@@ -6,13 +6,7 @@ import (
 	"math"
 	"math/rand"
 	"strings"
-	"time"
 )
-
-func init() {
-	//init rand seed
-	rand.Seed(time.Now().UnixNano())
-}
 
 // RandText creates random text of given size.
 func RandText(size int, sourceChars string) string {

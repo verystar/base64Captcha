@@ -49,7 +49,9 @@ func TestDriverMath_DrawCaptcha(t *testing.T) {
 				t.Errorf("DriverMath.DrawCaptcha() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			itemWriteFile(gotItem, "_builds", a, "png")
+			if err := itemWriteFile(gotItem, "_builds", a, "png"); err != nil {
+				t.Errorf("itemWriteFile() error = %v", err)
+			}
 
 		})
 	}

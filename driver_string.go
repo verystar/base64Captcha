@@ -4,7 +4,7 @@ import (
 	"image/color"
 	"strings"
 
-	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/opentype"
 )
 
 // DriverString captcha config for captcha-engine-characters.
@@ -35,7 +35,7 @@ type DriverString struct {
 
 	//Fonts loads by name see fonts.go's comment
 	Fonts      []string
-	fontsArray []*truetype.Font
+	fontsArray []*opentype.Font
 }
 
 // NewDriverString creates driver
@@ -44,7 +44,7 @@ func NewDriverString(height int, width int, noiseCount int, showLineOptions int,
 		fontsStorage = DefaultEmbeddedFonts
 	}
 
-	tfs := []*truetype.Font{}
+	tfs := []*opentype.Font{}
 	for _, fff := range fonts {
 		tf := fontsStorage.LoadFontByName("fonts/" + fff)
 		tfs = append(tfs, tf)
@@ -63,7 +63,7 @@ func (d *DriverString) ConvertFonts() *DriverString {
 		d.fontsStorage = DefaultEmbeddedFonts
 	}
 
-	tfs := []*truetype.Font{}
+	tfs := []*opentype.Font{}
 	for _, fff := range d.Fonts {
 		tf := d.fontsStorage.LoadFontByName("fonts/" + fff)
 		tfs = append(tfs, tf)

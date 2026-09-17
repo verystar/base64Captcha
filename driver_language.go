@@ -5,7 +5,7 @@ import (
 	"log"
 	"math/rand"
 
-	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/opentype"
 )
 
 // https://en.wikipedia.org/wiki/Unicode_block
@@ -61,12 +61,12 @@ type DriverLanguage struct {
 	fontsStorage FontsStorage
 
 	//Fonts loads by name see fonts.go's comment
-	Fonts        []*truetype.Font
+	Fonts        []*opentype.Font
 	LanguageCode string
 }
 
 // NewDriverLanguage creates a driver
-func NewDriverLanguage(height int, width int, noiseCount int, showLineOptions int, length int, bgColor *color.RGBA, fontsStorage FontsStorage, fonts []*truetype.Font, languageCode string) *DriverLanguage {
+func NewDriverLanguage(height int, width int, noiseCount int, showLineOptions int, length int, bgColor *color.RGBA, fontsStorage FontsStorage, fonts []*opentype.Font, languageCode string) *DriverLanguage {
 	return &DriverLanguage{Height: height, Width: width, NoiseCount: noiseCount, ShowLineOptions: showLineOptions, Length: length, BgColor: bgColor, fontsStorage: fontsStorage, Fonts: fonts, LanguageCode: languageCode}
 }
 

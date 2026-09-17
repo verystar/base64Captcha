@@ -3,22 +3,21 @@ package base64Captcha
 import (
 	"embed"
 
-	"github.com/golang/freetype"
-	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/opentype"
 )
 
 type EmbeddedFontsStorage struct {
 	fs embed.FS
 }
 
-func (s *EmbeddedFontsStorage) LoadFontByName(name string) *truetype.Font {
+func (s *EmbeddedFontsStorage) LoadFontByName(name string) *opentype.Font {
 	fontBytes, err := s.fs.ReadFile(name)
 	if err != nil {
 		panic(err)
 	}
 
-	//font file bytes to trueTypeFont
-	trueTypeFont, err := freetype.ParseFont(fontBytes)
+	//font file bytes to opentype font
+	trueTypeFont, err := opentype.Parse(fontBytes)
 	if err != nil {
 		panic(err)
 	}
@@ -27,8 +26,8 @@ func (s *EmbeddedFontsStorage) LoadFontByName(name string) *truetype.Font {
 }
 
 // LoadFontsByNames import fonts from dir, preserving the given order.
-func (s *EmbeddedFontsStorage) LoadFontsByNames(assetFontNames []string) []*truetype.Font {
-	fonts := make([]*truetype.Font, 0)
+func (s *EmbeddedFontsStorage) LoadFontsByNames(assetFontNames []string) []*opentype.Font {
+	fonts := make([]*opentype.Font, 0)
 	for _, assetName := range assetFontNames {
 		f := s.LoadFontByName(assetName)
 		fonts = append(fonts, f)

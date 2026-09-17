@@ -5,9 +5,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/golang/freetype"
-	"github.com/golang/freetype/truetype"
-	"golang.org/x/image/font"
 	"image"
 	"image/color"
 	"image/draw"
@@ -16,21 +13,24 @@ import (
 	"log"
 	"math"
 	"math/rand"
+
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
+	"golang.org/x/image/math/fixed"
 )
 
 // ItemChar captcha item of unicode characters
 type ItemChar struct {
-	bgColor color.Color
-	width   int
-	height  int
-	nrgba   *image.NRGBA
+	width  int
+	height int
+	nrgba  *image.NRGBA
 }
 
 // NewItemChar creates a captcha item of characters
 func NewItemChar(w int, h int, bgColor color.RGBA) *ItemChar {
 	d := ItemChar{width: w, height: h}
 	m := image.NewNRGBA(image.Rect(0, 0, w, h))
-	draw.Draw(m, m.Bounds(), &image.Uniform{bgColor}, image.ZP, draw.Src)
+	draw.Draw(m, m.Bounds(), &image.Uniform{bgColor}, image.Point{}, draw.Src)
 	d.nrgba = m
 	return &d
 }
@@ -176,59 +176,101 @@ func (item *ItemChar) drawBeeline(point1 point, point2 point, lineColor color.RG
 	}
 }
 
-func (item *ItemChar) drawNoise(noiseText string, fonts []*truetype.Font) error {
+func (item *ItemChar) drawNoise(noiseText string, fonts []*opentype.Font) error {
+	faces := newFaceSet()
+	defer faces.close()
 
-	c := freetype.NewContext()
-	c.SetDPI(imageStringDpi)
-
-	c.SetClip(item.nrgba.Bounds())
-	c.SetDst(item.nrgba)
-	c.SetHinting(font.HintingFull)
 	rawFontSize := float64(item.height) / (1 + float64(rand.Intn(7))/float64(10))
 
 	for _, char := range noiseText {
 		rw := rand.Intn(item.width)
 		rh := rand.Intn(item.height)
 		fontSize := rawFontSize/2 + float64(rand.Intn(5))
-		c.SetSrc(image.NewUniform(RandLightColor()))
-		c.SetFontSize(fontSize)
-		c.SetFont(randFontFrom(fonts))
-		pt := freetype.Pt(rw, rh)
-		if _, err := c.DrawString(string(char), pt); err != nil {
+		face, err := faces.face(randFontFrom(fonts), fontSize)
+		if err != nil {
 			log.Println(err)
+			continue
 		}
+		item.drawRune(face, image.NewUniform(RandLightColor()), rw, rh, char)
 	}
 	return nil
 }
 
 //drawText draw captcha string to image.把文字写入图像验证码
 
-func (item *ItemChar) drawText(text string, fonts []*truetype.Font) error {
-	c := freetype.NewContext()
-	c.SetDPI(imageStringDpi)
-	c.SetClip(item.nrgba.Bounds())
-	c.SetDst(item.nrgba)
-	c.SetHinting(font.HintingFull)
-
+func (item *ItemChar) drawText(text string, fonts []*opentype.Font) error {
 	if len(text) == 0 {
 		return errors.New("text must not be empty, there is nothing to draw")
 	}
+
+	faces := newFaceSet()
+	defer faces.close()
 
 	fontWidth := item.width / len(text)
 
 	for i, s := range text {
 		fontSize := item.height * (rand.Intn(7) + 7) / 16
-		c.SetSrc(image.NewUniform(RandDeepColor()))
-		c.SetFontSize(float64(fontSize))
-		c.SetFont(randFontFrom(fonts))
-		x := fontWidth*i + fontWidth/fontSize
-		y := item.height/2 + fontSize/2 - rand.Intn(item.height/16*3)
-		pt := freetype.Pt(x, y)
-		if _, err := c.DrawString(string(s), pt); err != nil {
+		face, err := faces.face(randFontFrom(fonts), float64(fontSize))
+		if err != nil {
 			return err
 		}
+		x := fontWidth*i + fontWidth/fontSize
+		y := item.height/2 + fontSize/2 - rand.Intn(item.height/16*3)
+		item.drawRune(face, image.NewUniform(RandDeepColor()), x, y, s)
 	}
 	return nil
+}
+
+// drawRune draws a single rune at the given baseline dot.
+func (item *ItemChar) drawRune(face font.Face, src image.Image, x, y int, r rune) {
+	d := font.Drawer{
+		Dst:  item.nrgba,
+		Src:  src,
+		Face: face,
+		Dot:  fixed.P(x, y),
+	}
+	d.DrawString(string(r))
+}
+
+// faceSet caches the font faces created during one drawing operation.
+// It is not safe for concurrent use and its faces must be closed after use.
+type faceSet struct {
+	cache map[faceKey]font.Face
+}
+
+type faceKey struct {
+	font *opentype.Font
+	size float64
+}
+
+func newFaceSet() *faceSet {
+	return &faceSet{cache: map[faceKey]font.Face{}}
+}
+
+// face returns a cached font face for the given font and size,
+// creating and caching it when it does not exist yet.
+func (s *faceSet) face(f *opentype.Font, size float64) (font.Face, error) {
+	key := faceKey{font: f, size: size}
+	if face, ok := s.cache[key]; ok {
+		return face, nil
+	}
+	face, err := opentype.NewFace(f, &opentype.FaceOptions{
+		Size:    size,
+		DPI:     imageStringDpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		return nil, err
+	}
+	s.cache[key] = face
+	return face, nil
+}
+
+// close releases all cached faces.
+func (s *faceSet) close() {
+	for _, face := range s.cache {
+		_ = face.Close()
+	}
 }
 
 // BinaryEncoding encodes an image to PNG and returns a byte slice.

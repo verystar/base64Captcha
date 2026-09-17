@@ -1,19 +1,34 @@
 # A flexible and various captcha package
-![Test](https://github.com/mojocn/base64Captcha/workflows/Test/badge.svg)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mojocn/base64Captcha)
-[![Go Report Card](https://goreportcard.com/badge/github.com/mojocn/base64Captcha)](https://goreportcard.com/report/github.com/mojocn/base64Captcha)
-[![GoDoc](https://godoc.org/github.com/mojocn/base64Captcha?status.svg)](https://godoc.org/github.com/mojocn/base64Captcha)
-[![Build Status](https://travis-ci.org/mojocn/base64Captcha.svg?branch=master)](https://travis-ci.org/mojocn/base64Captcha)
-[![codecov](https://codecov.io/gh/mojocn/base64Captcha/branch/master/graph/badge.svg)](https://codecov.io/gh/mojocn/base64Captcha)
+![Test](https://github.com/verystar/base64Captcha/workflows/Test/badge.svg)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/verystar/base64Captcha)
+[![Go Report Card](https://goreportcard.com/badge/github.com/verystar/base64Captcha)](https://goreportcard.com/report/github.com/verystar/base64Captcha)
+[![GoDoc](https://pkg.go.dev/badge/github.com/verystar/base64Captcha.svg)](https://pkg.go.dev/github.com/verystar/base64Captcha)
+[![Build Status](https://travis-ci.org/verystar/base64Captcha.svg?branch=master)](https://travis-ci.org/verystar/base64Captcha)
+[![codecov](https://codecov.io/gh/verystar/base64Captcha/branch/master/graph/badge.svg)](https://codecov.io/gh/verystar/base64Captcha)
 ![stability-stable](https://img.shields.io/badge/stability-stable-brightgreen.svg)
 [![Foundation](https://img.shields.io/badge/Golang-Foundation-green.svg)](http://golangfoundation.org)
+
+> **Fork 说明**
+>
+> 本仓库 fork 自 [mojocn/base64Captcha](https://github.com/mojocn/base64Captcha)，模块路径已由 `github.com/mojocn/base64Captcha` 改为 `github.com/verystar/base64Captcha`：
+>
+> ```go
+> import "github.com/verystar/base64Captcha"
+> ```
+>
+> 与上游相比的主要差异：
+> - 移除中文验证码驱动 `DriverChinese` 与中文字体 `wqy-microhei.ttc`
+> - 移除音频验证码（`DriverAudio` 驱动与 `sounds.go`）
+> - 内置字体精简为 `actionj.ttf`、`Flim-Flam.ttf`
+> - 字体渲染由已归档的 `github.com/golang/freetype` 迁移至官方 `golang.org/x/image`
+> - Go 版本要求升级到 1.25
 
 Base64captcha supports any unicode character and can easily be customized to support Math Korean Japanese Russian Arabic etc.
 
 
 ## 1. 📖📖📖 Doc & Demo
 
-* [English](https://godoc.org/github.com/mojocn/base64Captcha)
+* [English](https://pkg.go.dev/github.com/verystar/base64Captcha)
 * [中文文档](https://mojotv.cn/go/refactor-base64-captcha)
 * [Playground](https://captcha.mojotv.cn)
 
@@ -28,9 +43,9 @@ or edit your `go.mod` file to
 `github.com/mojocn/base64Captcha@v1.2.2`
 
 ### 2.2 📥📥📥 Download package
-    go get -u github.com/mojocn/base64Captcha
+    go get -u github.com/verystar/base64Captcha
 For Gopher from mainland China without VPN `go get golang.org/x/image` failure solution:
-- go version > 1.11
+- go version >= 1.25
 - set env `GOPROXY=https://goproxy.io`
 
 ### 2.3 🏂🏂🏂 How to code with base64Captcha
@@ -150,7 +165,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/mojocn/base64Captcha"
+	"github.com/verystar/base64Captcha"
 	"log"
 	"net/http"
 )

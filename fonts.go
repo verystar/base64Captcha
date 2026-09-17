@@ -3,7 +3,7 @@ package base64Captcha
 import (
 	"math/rand"
 
-	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/opentype"
 )
 
 var fontsSimple = DefaultEmbeddedFonts.LoadFontsByNames([]string{
@@ -15,7 +15,7 @@ var fontsSimple = DefaultEmbeddedFonts.LoadFontsByNames([]string{
 var fontsAll = fontsSimple
 
 // randFontFrom choose random font family.选择随机的字体
-func randFontFrom(fonts []*truetype.Font) *truetype.Font {
+func randFontFrom(fonts []*opentype.Font) *opentype.Font {
 	fontCount := len(fonts)
 
 	if fontCount == 0 {

@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/opentype"
 )
 
 func TestDriverString_DrawCaptcha(t *testing.T) {
@@ -17,7 +17,7 @@ func TestDriverString_DrawCaptcha(t *testing.T) {
 		ShowNoiseOption int
 		CaptchaLen      int
 		BgColor         *color.RGBA
-		Fonts           []*truetype.Font
+		Fonts           []*opentype.Font
 	}
 	type args struct {
 		content string

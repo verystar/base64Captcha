@@ -48,15 +48,15 @@ func TestGetClear(t *testing.T) {
 }
 
 func BenchmarkSetCollect(b *testing.B) {
-	b.StopTimer()
 	d := "fdskfew9832232r"
 	s := NewMemoryStore(9999, -1)
 	ids := make([]string, 1000)
 	for i := range ids {
 		ids[i] = fmt.Sprintf("%d", rand.Int63())
 	}
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
+	// b.Loop() resets the timer before the first iteration, so the setup
+	// above is not measured and no manual StopTimer/StartTimer is needed.
+	for b.Loop() {
 		for j := 0; j < 1000; j++ {
 			_ = s.Set(ids[j], d)
 		}
